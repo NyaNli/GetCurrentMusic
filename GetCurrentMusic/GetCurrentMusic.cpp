@@ -23,7 +23,10 @@ void WINAPI Refresh()
 	else
 	{
 		session->GetMedia(&media);
-		Getable = true;
+		if (!media)
+			Getable = false;
+		else
+			Getable = true;
 	}
 }
 

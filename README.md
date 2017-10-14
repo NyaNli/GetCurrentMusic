@@ -11,3 +11,7 @@ GetCurrentMusic - C++编写的DLL动态链接库
 GetCurrentMusicGUI - C#编写的界面，运行时需要GetCurrentMusic.dll，因为我要用在OBS直播上所以背景是原谅色
 
 Test - 测试用控制台项目，运行时需要GetCurrentMusic.dll
+
+## 注意
+
+我无法在我的64位系统上以32位模式成功运行这个程序，在执行到获取INowPlayingSession接口时会直接出错，即使我调用的是正确的函数，我个人猜测是程序必须要与系统统一版本才可正常获取接口，请大家编译时注意

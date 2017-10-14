@@ -34,6 +34,7 @@ void WINAPI GetSongInformation(wchar_t text[255])
 {
 	IPropertyStoreCache * store;
 	PROPVARIANT pv;
+	text[0] = 0;
 	media->GetInformation(&store);
 	if (!store)
 	{
@@ -41,10 +42,14 @@ void WINAPI GetSongInformation(wchar_t text[255])
 		return;
 	}
 	store->GetValue(PKEY_ARTIST, &pv);
-	wcscpy_s(text, 255, pv.pwszVal);
-	wcscat_s(text, 255, L" - ");
+	if (pv.vt == 0x001f)
+	{
+		wcscpy_s(text, 255, pv.pwszVal);
+		wcscat_s(text, 255, L" - ");
+	}
 	store->GetValue(PKEY_TITLE, &pv);
-	wcscat_s(text, 255, pv.pwszVal);
+	if(pv.vt == 0x001f)
+		wcscat_s(text, 255, pv.pwszVal);
 }
 
 bool WINAPI GetAble()

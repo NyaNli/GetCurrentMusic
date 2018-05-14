@@ -13,5 +13,7 @@ namespace GetCurrentMusicGUI
         public static extern void GetSongInformation(StringBuilder text);
         [DllImport("GetCurrentMusic.dll")]
         public static extern bool GetAble();
+        [DllImport("GetCurrentMusic.dll")]
+        public static extern void Init();
     }
 }

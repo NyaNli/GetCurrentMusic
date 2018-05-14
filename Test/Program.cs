@@ -14,10 +14,13 @@ namespace Test
         public static extern void GetSongInformation(StringBuilder text);
         [DllImport("GetCurrentMusic.dll")]
         public static extern bool GetAble();
+        [DllImport("GetCurrentMusic.dll")]
+        public static extern void Init();
 
         static void Main(string[] args)
         {
             StringBuilder txt = new StringBuilder(255, 255);
+            Init();
             while(true)
             {
                 Thread.Sleep(1000);

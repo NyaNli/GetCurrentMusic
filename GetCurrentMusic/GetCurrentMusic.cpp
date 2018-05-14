@@ -4,19 +4,24 @@
 #include "stdafx.h"
 #include "Interfaces.h"
 
-INowPlayingSessionManager * manager;
+INowPlayingSessionManager * manager=NULL;
 INowPlayingSession * session;
 IMediaPlaybackDataSource * media;
 
-bool Getable;
+bool Getable=false;
 
-void Init()
+//Call it yourself!!!
+void WINAPI Init()
 {
+	CoInitialize(NULL);
 	CoCreateInstance(CLSID_NowPlayingSessionManager, NULL, CLSCTX_LOCAL_SERVER, IID_NowPlayingSessionManager, (void **)&manager);
+	Refresh();
 }
 
 void WINAPI Refresh()
 {
+	if (!manager)
+		Getable = false;
 	manager->GetCurrentSession(&session);
 	if (!session)
 		Getable = false;
@@ -30,7 +35,7 @@ void WINAPI Refresh()
 	}
 }
 
-void WINAPI GetSongInformation(wchar_t text[255])
+void WINAPI GetSongInformation(wchar_t *text)
 {
 	IPropertyStoreCache * store;
 	PROPVARIANT pv;

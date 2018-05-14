@@ -13,6 +13,7 @@ namespace GetCurrentMusicGUI
         public Form1()
         {
             InitializeComponent();
+            API.Init();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

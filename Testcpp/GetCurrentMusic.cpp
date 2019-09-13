@@ -4,62 +4,50 @@
 #include "stdafx.h"
 #include "Interfaces.h"
 
-INowPlayingSessionManager* manager = NULL;
-INowPlayingSession** sessions = NULL;
+INowPlayingSessionManager * manager = NULL;
+INowPlayingSession ** sessions = NULL;
 long sessioncount = 0;
 long currentindex = 0;
+IMediaPlaybackDataSource * media = NULL;
 
-bool Getable = false;
+bool Getable=false;
 
 //Call it yourself!!!
 void WINAPI Init()
 {
 	CoInitialize(NULL);
-	CoCreateInstance(CLSID_NowPlayingSessionManager, NULL, CLSCTX_LOCAL_SERVER, IID_NowPlayingSessionManager, (void**)& manager);
+	CoCreateInstance(CLSID_NowPlayingSessionManager, NULL, CLSCTX_LOCAL_SERVER, IID_NowPlayingSessionManager, (void **)&manager);
 	Refresh();
 }
 
 void WINAPI Refresh()
 {
 	if (!manager)
-	{
 		Getable = false;
-		return;
-	}
 	//manager->GetCurrentSession(&session);
-	if (sessioncount > 0)
-	{
-		for (int i = 0; i < sessioncount; i++)
-			sessions[i]->Release();
-		sessioncount = 0;
-		sessions = NULL;
-	}
 	manager->GetAllSession(&sessioncount, &sessions);
-	if (sessioncount <= 0)
+	if (!sessions)
 		Getable = false;
 	else
 	{
 		currentindex = 0;
-		Getable = true;
+		sessions[currentindex]->GetMedia(&media);
+		if (!media)
+			Getable = false;
+		else
+			Getable = true;
 	}
 }
 
-void WINAPI GetSongInformation(wchar_t* text)
+void WINAPI GetSongInformation(wchar_t *text)
 {
-	IMediaPlaybackDataSource* media = NULL;
-	sessions[currentindex]->GetMedia(&media);
-	if (!media)
-	{
-		Getable = false;
-		return;
-	}
-	IPropertyStoreCache* store;
+	IPropertyStoreCache * store;
 	PROPVARIANT pv;
 	text[0] = 0;
 	media->GetInformation(&store);
 	if (!store)
 	{
-		Getable = false;
+		Refresh();
 		return;
 	}
 	store->GetValue(PKEY_ARTIST, &pv);
@@ -68,13 +56,10 @@ void WINAPI GetSongInformation(wchar_t* text)
 		wcscpy_s(text, 255, pv.pwszVal);
 		wcscat_s(text, 255, L" - ");
 	}
-	PropVariantClear(&pv);
+	
 	store->GetValue(PKEY_TITLE, &pv);
-	if (pv.vt == 0x001f)
+	if(pv.vt == 0x001f)
 		wcscat_s(text, 255, pv.pwszVal);
-	PropVariantClear(&pv);
-	store->Release();
-	media->Release();
 }
 
 bool WINAPI GetAble()
@@ -87,4 +72,7 @@ void WINAPI NextSession()
 	currentindex++;
 	if (currentindex >= sessioncount)
 		currentindex = 0;
+	sessions[currentindex]->GetMedia(&media);
+	if (!media)
+		Getable = false;
 }

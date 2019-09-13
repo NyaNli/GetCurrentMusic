@@ -4,3 +4,4 @@ EXPORTS
  GetSongInformation @2
  GetAble @3
  Init @4
+ NextSession @5

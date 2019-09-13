@@ -15,5 +15,7 @@ namespace GetCurrentMusicGUI
         public static extern bool GetAble();
         [DllImport("GetCurrentMusic.dll")]
         public static extern void Init();
+        [DllImport("GetCurrentMusic.dll")]
+        public static extern void NextSession();
     }
 }
